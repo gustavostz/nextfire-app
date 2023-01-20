@@ -67,12 +67,10 @@ function PostForm({defaultValues, postRef, preview}) {
         reset,
         watch,
         formState,
-        errors
+        // errors
     } = useForm({defaultValues, mode: 'onChange'});
 
     const {isValid, isDirty} = formState;
-
-    console.log(register)
 
     const updatePost = async ({content, published}) => {
         console.log("teste4")
@@ -82,17 +80,11 @@ function PostForm({defaultValues, postRef, preview}) {
             published,
             updatedAt: serverTimestamp(),
         });
-        // await postRef.update({
-        //     content,
-        //     published,
-        //     updatedAt: serverTimestamp(),
-        // });
 
         reset({content, published});
 
         toast.success('Post updated successfully!')
     };
-    console.log("teste5")
 
     return (
         <form onSubmit={handleSubmit(updatePost)}>
@@ -118,8 +110,7 @@ function PostForm({defaultValues, postRef, preview}) {
                 </fieldset>
 
                 {/*{errors.content && <p className="text-danger">{errors.content.message}</p>}*/}
-
-                <button type="submit" disabled={!isDirty || !isValid}>
+                <button type="submit" className="btn-green" disabled={!isDirty || !isValid}>
                     Save Changes
                 </button>
             </div>
