@@ -1,7 +1,9 @@
 import {initializeApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {collection, connectFirestoreEmulator, getDocs, getFirestore, limit, query, where, Timestamp, serverTimestamp as serverTimestampFirestore} from "firebase/firestore";
-import {getStorage} from "firebase/storage";
+import {getStorage, TaskEvent} from "firebase/storage";
+import firebase from "firebase/compat";
+import TaskState = firebase.storage.TaskState;
 
 
 // Initialize firebase
