@@ -2,7 +2,8 @@ import styles from '../../styles/Admin.module.css';
 import AuthCheck from '../../components/AuthCheck';
 import PostFeed from '../../components/PostFeed';
 import { UserContext } from '../../lib/context';
-import { firestore, auth, serverTimestamp } from '../../lib/firebase';
+import { firestore, auth, serverTimestamp } from '@/lib/firebase';
+import {collection, doc, orderBy, query as queryFirestore, setDoc} from 'firebase/firestore';
 
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -23,8 +24,9 @@ export default function AdminPostsPage(props) {
 }
 
 function PostList() {
-    const ref = firestore.collection('users').doc(auth.currentUser.uid).collection('posts');
-    const query = ref.orderBy('createdAt');
+    const ref = collection(firestore, 'users', auth.currentUser.uid, 'posts');
+    // const ref = firestore.collection('users').doc(auth.currentUser.uid).collection('posts');
+    const query = queryFirestore(ref, orderBy('createdAt'));
     const [querySnapshot] = useCollection(query);
 
     const posts = querySnapshot?.docs.map((doc) => doc.data());
@@ -52,7 +54,8 @@ function CreateNewPost() {
     const createPost = async (e) => {
         e.preventDefault();
         const uid = auth.currentUser.uid;
-        const ref = firestore.collection('users').doc(uid).collection('posts').doc(slug);
+        const ref = doc(collection(firestore, 'users', uid, 'posts'), slug);
+
 
         // Tip: give all fields a default value here
         const data = {
@@ -67,12 +70,12 @@ function CreateNewPost() {
             heartCount: 0,
         };
 
-        await ref.set(data);
+        await setDoc(ref, data);
 
         toast.success('Post created!')
 
         // Imperative navigation after doc is set
-        router.push(`/admin/${slug}`);
+        await router.push(`/admin/${slug}`);
 
     };
 
